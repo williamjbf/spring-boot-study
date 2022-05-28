@@ -24,6 +24,14 @@ public class UsersController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @GetMapping(value = "findById")
+    @ResponseBody
+    public ResponseEntity<Users> findUserById(@RequestParam(name = "idUser") long idUser){
+        Users user = repository.findById(idUser).get();
+
+        return new ResponseEntity<>(user,HttpStatus.OK);
+    }
+
     @PostMapping(value = "save")
     @ResponseBody
     public ResponseEntity<Users> saveUser(@RequestBody Users users){
@@ -36,7 +44,7 @@ public class UsersController {
 
     @DeleteMapping(value = "delete")
     @ResponseBody
-    public ResponseEntity<String > deleteUser(@RequestParam Long idUser){
+    public ResponseEntity<String > deleteUser(@RequestParam(name = "idUser") Long idUser){
 
         repository.deleteById(idUser);
 
