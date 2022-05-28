@@ -33,4 +33,13 @@ public class UsersController {
          return new ResponseEntity<>(user,HttpStatus.CREATED);
     }
 
+
+    @DeleteMapping(value = "delete")
+    @ResponseBody
+    public ResponseEntity<String > deleteUser(@RequestParam Long idUser){
+
+        repository.deleteById(idUser);
+
+        return new ResponseEntity<String>("user successfully deleted ",HttpStatus.OK);
+    }
 }
