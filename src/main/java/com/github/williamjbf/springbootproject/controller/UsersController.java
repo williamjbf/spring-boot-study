@@ -5,10 +5,7 @@ import com.github.williamjbf.springbootproject.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,4 +23,14 @@ public class UsersController {
 
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+
+    @PostMapping(value = "save")
+    @ResponseBody
+    public ResponseEntity<Users> saveUser(@RequestBody Users users){
+
+         Users user = repository.save(users);
+
+         return new ResponseEntity<>(user,HttpStatus.CREATED);
+    }
+
 }
