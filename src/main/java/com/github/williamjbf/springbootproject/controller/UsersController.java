@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/users")
@@ -41,6 +42,14 @@ public class UsersController {
          return new ResponseEntity<>(user,HttpStatus.CREATED);
     }
 
+    @PutMapping(value = "update")
+    @ResponseBody
+    public ResponseEntity<?> updateUser(@RequestBody Users users){
+
+        Users user = repository.saveAndFlush(users);
+
+        return new ResponseEntity<>(user,HttpStatus.OK);
+    }
 
     @DeleteMapping(value = "delete")
     @ResponseBody
