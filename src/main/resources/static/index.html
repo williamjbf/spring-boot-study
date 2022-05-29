@@ -29,10 +29,11 @@
             </div>
 
         </form>
-    <div class="col-4">
+    <div class="">
         <button type="button" class="btn btn-primary" onclick="cleanForm()">New</button>
         <button type="button" class="btn btn-primary" onclick="saveUser()">Save</button>
         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#userSearchModal" onclick="searchUser()">Search</button>
+        <button type="button" class="btn btn-danger" onclick="deleteUser()">Delete</button>
     </div>
 </div>
 
@@ -48,7 +49,7 @@
                     <div class="mb-3">
                         <label for="nameSearch" class="form-label">User name:</label>
                         <input type="text" class="form-control" id="nameSearch">
-                        <button type="button" class="row btn btn-success" onclick="searchUser()">Search</button>
+                        <button type="button" class="btn btn-success" onclick="searchUser()">Search</button>
 
                     </div>
                 </form>
@@ -59,6 +60,7 @@
                         <th scope="col">Name</th>
                         <th scope="col">Age</th>
                         <th scope="col">Edit</th>
+                        <th scope="col">Delete</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -116,11 +118,13 @@
                 $('#resultTable > tbody > tr').remove();
 
                 for(let index =0; index < response.length; index++){
-                    $('#resultTable > tbody').append('<tr>' +
+                    $('#resultTable > tbody').append('<tr id = '+ response[index].id +'>' +
                         '<td>'+response[index].id+'</td>' +
                         '<td>'+response[index].name+'</td>' +
                         '<td>'+response[index].age+'</td>' +
-                        '<td><button type="button" className="btn btn-info" onclick="editUser('+ response[index].id+')">Edit</button></td>'+
+                        '<td><button type="button" class="btn btn-info" onclick="editUser('+ response[index].id+')">Edit</button></td>'+
+                        '<td><button type="button" class="btn btn-danger" onclick="deleteUser('+ response[index].id+')">Delete</button></td>'+
+
                         '</tr>');
                 }
             }
@@ -143,10 +147,33 @@
                 $('#userSearchModal').modal('hide');
             }
         }).fail(function (xhr,status,errorThrown){
-            alert("error when searching for user: " + xhr.responseText);
+            alert("error fetching user to educate: " + xhr.responseText);
         })
     }
 
+    function deleteUser(id){
+
+        if(id == null || id.trim()===""){
+            id= $("#id").val();
+        }
+
+        if(confirm("really want to delete the user with the id:" + id)) {
+
+            $.ajax({
+                method: "DELETE",
+                url: "users/delete",
+                data: "idUser=" + id,
+                success: function (response) {
+                    cleanForm();
+
+                    $('#' + id).remove();
+                    alert(response);
+                }
+            }).fail(function (xhr, status, errorThrown) {
+                alert("error deleting user: " + xhr.responseText);
+            })
+        }
+    }
 </script>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
