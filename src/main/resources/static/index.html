@@ -20,12 +20,12 @@
 
             <div class="row mb-3">
                 <label for="name" class="row form-label">NAME</label>
-                <input type="text" class="row form-control" id="name">
+                <input type="text" class="row form-control" id="name" required>
             </div>
 
             <div class="row mb-3">
                 <label for="age" class="row form-label">AGE</label>
-                <input type="text" class="row form-control" id="age">
+                <input type="text" class="row form-control" id="age" required>
             </div>
 
         </form>
@@ -49,28 +49,30 @@
                     <div class="mb-3">
                         <label for="nameSearch" class="form-label">User name:</label>
                         <input type="text" class="form-control" id="nameSearch">
-                        <button type="button" class="btn btn-success" onclick="searchUser()">Search</button>
 
                     </div>
                 </form>
-                <table class="table" id="resultTable">
-                    <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Age</th>
-                        <th scope="col">Edit</th>
-                        <th scope="col">Delete</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                <div style="height: 400px; overflow: auto">
 
-                    </tbody>
-                </table>
+                    <table class="table" id="resultTable">
+                        <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">Edit</th>
+                            <th scope="col">Delete</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+
+                    </table>
+                </div>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="searchUser()">Search</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-
             </div>
         </div>
     </div>
@@ -86,6 +88,16 @@
         let id=  $("#id").val();
         let name= $("#name").val();
         let age= $("#age").val();
+
+        if(name == null || name.trim() === ''){
+            alert("inform the name")
+            return;
+        }
+
+        if(age == null || age.trim() === ''){
+            alert("inform age")
+            return;
+        }
 
         $.ajax({
             method: "PUT",
@@ -157,22 +169,29 @@
             id= $("#id").val();
         }
 
-        if(confirm("really want to delete the user with the id:" + id)) {
-
-            $.ajax({
-                method: "DELETE",
-                url: "users/delete",
-                data: "idUser=" + id,
-                success: function (response) {
-                    cleanForm();
-
-                    $('#' + id).remove();
-                    alert(response);
-                }
-            }).fail(function (xhr, status, errorThrown) {
-                alert("error deleting user: " + xhr.responseText);
-            })
+        if(id == null || id.trim() === ''){
+            alert("no user selected")
+            return;
         }
+
+            if(confirm("really want to delete the user with the id:" + id)) {
+
+                $.ajax({
+                    method: "DELETE",
+                    url: "users/delete",
+                    data: "idUser=" + id,
+                    success: function (response) {
+                        cleanForm();
+
+                        $('#' + id).remove();
+                        alert(response);
+                    }
+                }).fail(function (xhr, status, errorThrown) {
+                    alert("error deleting user: " + xhr.responseText);
+                })
+            }
+
+
     }
 </script>
 
