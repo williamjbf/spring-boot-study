@@ -12,7 +12,7 @@
 <title>CRUD USERS</title>
 
 <div class="container position-relative" style="width: 50%; padding-top : 20px ">
-        <form action="">
+        <form action="" id="formUser">
             <div class="row mb-3">
                 <label for="id" class="form-label">ID</label>
                 <input type="text" class="form-control" id="id" readonly>
@@ -29,20 +29,43 @@
             </div>
 
         </form>
-
-        <button type="button" class="row btn btn-primary" onclick="saveUser()">Primary</button>
-
+    <div class="col-4">
+        <button type="button" class="btn btn-primary" onclick="cleanForm()">New</button>
+        <button type="button" class="btn btn-success" onclick="saveUser()">Save</button>
+    </div>
 </div>
 
 <script type="text/javascript">
+
+    function cleanForm(){
+        document.getElementById('formUser').reset()
+    }
 
     function saveUser(){
         let id=  $("#id").val();
         let name= $("#name").val();
         let age= $("#age").val();
 
-        alert(id + ": " + name + " - " + age);
+        $.ajax({
+            method: "PUT",
+            url:"users/update",
+            data: JSON.stringify({
+                "id":id,
+                "name":name,
+                "age":age
+            }),
+            contentType: "application/json; charset=utf-8",
+            success: function (response){
+                $("#id").val(response.id);
+                $("#name").val(response.name);
+                $("#age").val(response.age);
+                alert("user saved successfully");
+            }
+        }).fail(function (xhr,status,errorThrown){
+            alert("error saving user: " + xhr.responseText);
+        })
     }
+
 
 </script>
 
