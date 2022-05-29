@@ -14,24 +14,63 @@
 <div class="container position-relative" style="width: 50%; padding-top : 20px ">
         <form action="" id="formUser">
             <div class="row mb-3">
-                <label for="id" class="form-label">ID</label>
-                <input type="text" class="form-control" id="id" readonly>
+                <label for="id" class="row form-label">ID</label>
+                <input type="text" class="row form-control" id="id" readonly>
             </div>
 
             <div class="row mb-3">
-                <label for="name" class="form-label">NAME</label>
-                <input type="text" class="form-control" id="name">
+                <label for="name" class="row form-label">NAME</label>
+                <input type="text" class="row form-control" id="name">
             </div>
 
             <div class="row mb-3">
-                <label for="age" class="form-label">AGE</label>
-                <input type="text" class="form-control" id="age">
+                <label for="age" class="row form-label">AGE</label>
+                <input type="text" class="row form-control" id="age">
             </div>
 
         </form>
     <div class="col-4">
         <button type="button" class="btn btn-primary" onclick="cleanForm()">New</button>
-        <button type="button" class="btn btn-success" onclick="saveUser()">Save</button>
+        <button type="button" class="btn btn-primary" onclick="saveUser()">Save</button>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#userSearchModal" onclick="searchUser()">Search</button>
+    </div>
+</div>
+
+<div class="modal fade" id="userSearchModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="nameSearch" class="form-label">User name:</label>
+                        <input type="text" class="form-control" id="nameSearch">
+                        <button type="button" class="row btn btn-success" onclick="searchUser()">Search</button>
+
+                    </div>
+                </form>
+                <table class="table" id="resultTable">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Age</th>
+                        <th scope="col">Edit</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+            </div>
+        </div>
     </div>
 </div>
 
@@ -66,6 +105,47 @@
         })
     }
 
+    function searchUser(){
+        let name = $("#nameSearch").val();
+
+        $.ajax({
+            method: "GET",
+            url:"users/findByName",
+            data: "name="+name,
+            success: function (response){
+                $('#resultTable > tbody > tr').remove();
+
+                for(let index =0; index < response.length; index++){
+                    $('#resultTable > tbody').append('<tr>' +
+                        '<td>'+response[index].id+'</td>' +
+                        '<td>'+response[index].name+'</td>' +
+                        '<td>'+response[index].age+'</td>' +
+                        '<td><button type="button" className="btn btn-info" onclick="editUser('+ response[index].id+')">Edit</button></td>'+
+                        '</tr>');
+                }
+            }
+        }).fail(function (xhr,status,errorThrown){
+            alert("error when searching for user: " + xhr.responseText);
+        })
+    }
+
+    function editUser(id){
+        $.ajax({
+            method: "GET",
+            url:"users/findById",
+            data: "idUser="+id,
+            success: function (response){
+                cleanForm();
+                $("#id").val(response.id);
+                $("#name").val(response.name);
+                $("#age").val(response.age);
+
+                $('#userSearchModal').modal('hide');
+            }
+        }).fail(function (xhr,status,errorThrown){
+            alert("error when searching for user: " + xhr.responseText);
+        })
+    }
 
 </script>
 
